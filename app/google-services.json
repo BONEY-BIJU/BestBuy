@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "750930743519",
+    "project_id": "bestbuy-dbf68",
+    "storage_bucket": "bestbuy-dbf68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750930743519:android:74b7291325aada3e75d96a",
+        "android_client_info": {
+          "package_name": "com.example.bestbuy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4PE8l356lV5VfV6LkbsgRuDEsP9tbPSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
