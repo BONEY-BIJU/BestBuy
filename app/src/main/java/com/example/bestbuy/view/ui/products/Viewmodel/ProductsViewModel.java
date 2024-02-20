@@ -4,44 +4,51 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bestbuy.view.ui.products.model.ProductModel;
 import com.example.bestbuy.repository.ProductRepository;
+import com.example.bestbuy.view.ui.products.model.ProductModel;
 
 import java.util.List;
 
-public class ProductViewModel extends ViewModel {
-    private MutableLiveData<List<ProductModel>> productListLiveData;
-    private ProductRepository productRepository;
+public class ProductsViewModel extends ViewModel {
 
-    public ProductViewModel() {
-        productListLiveData = new MutableLiveData<>();
-        productRepository = new ProductRepository(); // Assuming you have a ProductRepository class
+    String query;
+    private static ProductRepository productRepository;
+    private MutableLiveData<List<ProductModel>> allProductsLiveData;
+    private static MutableLiveData<List<ProductModel>> searchedProductsLiveData;
+    private static MutableLiveData<Exception> errorLiveData;
+
+    public ProductsViewModel() {
+        productRepository = new ProductRepository();
+        allProductsLiveData = new MutableLiveData<>();
+        searchedProductsLiveData = new MutableLiveData<>();
+        errorLiveData = new MutableLiveData<>();
     }
 
-    public LiveData<List<ProductModel>> getProductListLiveData() {
-        return productListLiveData;
+    public LiveData<List<ProductModel>> getAllProductsLiveData() {
+        fetchAllProducts();
+        return allProductsLiveData;
     }
 
-    public void fetchProducts() {
-        productRepository.FetchProducts(new ProductRepository.ProductFetchCallback() {
-            @Override
-            public void onSuccess(List<ProductModel> productList) {
-                productListLiveData.setValue(productList);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                // Handle error
-            }
-        });
+    public LiveData<List<ProductModel>> getSearchedProductsLiveData() {
+        return searchedProductsLiveData;
     }
 
-    public void searchProducts(String query) {
-        productRepository.searchProducts(query, new ProductRepository.ProductSearchCallback() {
-            @Override
-            public void onSearchResults(List<ProductModel> searchResults) {
-                productListLiveData.setValue(searchResults);
-            }
-        });
+    public LiveData<Exception> getErrorLiveData() {
+        return errorLiveData;
     }
+
+    public void fetchAllProducts() {
+       productRepository.FetchProducts((allProductsLiveData::postValue),
+               e ->{
+    });
+
+    }
+
+//    public static void searchProducts(String query) {
+//        productRepository.searchProducts(
+//                query,
+//                productList -> searchedProductsLiveData.setValue(productList),
+//                error -> errorLiveData.setValue(error)
+//        );
+//    }
 }

@@ -1,17 +1,22 @@
 package com.example.bestbuy.adapter;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.bestbuy.R;
 import com.example.bestbuy.view.ui.products.model.ProductModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +25,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     private List<ProductModel> productList;
     private List<ProductModel> productListFiltered;
+    private Context context;
 
-    public ProductAdapter(List<ProductModel> productList) {
+    public ProductAdapter(Context context,List<ProductModel> productList) {
+        this.context=context;
         this.productList = productList;
         this.productListFiltered = new ArrayList<>(productList);
     }
@@ -76,15 +83,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView productNameTextView;
+        private TextView productPriceTextview;
+        private ImageView productImageview;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            productNameTextView = itemView.findViewById(R.id.);
+            productNameTextView = itemView.findViewById(R.id.All_product_name);
+            productPriceTextview=itemView.findViewById(R.id.AllProductprice);
+            productImageview=itemView.findViewById(R.id.productimg);
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(ProductModel product) {
             productNameTextView.setText(product.getName());
-            // Bind other product data as needed
+            String currencySymbol = "₹";
+             productPriceTextview.setText(currencySymbol +" " + product.getPrice());
+            Picasso.get().load(product.getImageUrl()).into(productImageview);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +49,6 @@ public class HomeFragment extends Fragment {
        trendingView.setLayoutManager(gridLayoutManager);
        // trendingView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         //trendingView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-
         return root;
     }
 
