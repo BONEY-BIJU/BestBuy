@@ -1,5 +1,7 @@
 package com.example.bestbuy.repository;
 
+import android.util.Log;
+
 import com.example.bestbuy.view.ui.home.Model.HomeModel;
 import com.example.bestbuy.view.ui.products.model.ProductModel;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -10,30 +12,52 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ProductRepository {
+    private  List<ProductModel> productList;
+
+//    public ProductRepository(List<ProductModel> productList) {
+//        this.productList = productList;
+//    }
+
     public void FetchProducts(Consumer<List<ProductModel>> onSuccess, Consumer<Exception> onError) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Products")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<ProductModel> Productlist = new ArrayList<>();
+                       productList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             ProductModel productModel = document.toObject(ProductModel.class);
-                            Productlist.add(productModel);
+                           this.productList.add(productModel);
                         }
-                        onSuccess.accept(Productlist);
+                        onSuccess.accept(productList);
                     } else {
                         onError.accept(task.getException());
                     }
                 });
 
-
     }
+        public void searchProducts (String query, Consumer < List<ProductModel>> onSuccess, Consumer <Exception> onError){
+            String lowerQuery = query.toLowerCase();
+            List<ProductModel> searchResults = new ArrayList<>();
+
+            for (ProductModel product : productList) {
+                String lowerProductName = product.getName().toLowerCase();
+                Log.d("SearchDebug","Out"+lowerProductName+""+lowerQuery);
+                if (lowerProductName.contains(lowerQuery)) {
+                    Log.d("SearchDebug","In  "+lowerProductName+""+lowerQuery);
+                    searchResults.add(product);
+                }
+            }
+
+            onSuccess.accept(searchResults);
+        }
+    }
+
 
 //    public void searchProducts(String query, Consumer<List<ProductModel>> onSuccess, Consumer<Exception> onError) {
 //        FirebaseFirestore db = FirebaseFirestore.getInstance();
 //        db.collection("Products")
-//                .whereEqualTo("name", query) // Change "productName" to the actual field name you want to search against
+//                .whereEqualTo("name", query) // Change "name" to the actual field name you want to search against
 //                .get()
 //                .addOnCompleteListener(task -> {
 //                    if (task.isSuccessful()) {
@@ -48,7 +72,8 @@ public class ProductRepository {
 //                    }
 //                });
 //    }
-}
+//}
+
 //    public void searchProducts(String query, Consumer<List<AllProducts>> onSuccess, Consumer<Exception> onError) {
 //        String lowerQuery = query.toLowerCase();
 //        Log.d("QueyinRep0", lowerQuery);

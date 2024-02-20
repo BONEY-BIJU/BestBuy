@@ -1,90 +1,93 @@
 package com.example.bestbuy.view.ui.products.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bestbuy.R;
 import com.example.bestbuy.adapter.ProductAdapter;
-import com.example.bestbuy.databinding.FragmentProductsBinding;
-import com.example.bestbuy.view.ui.home.viewmodel.HomeViewModel;
+import com.example.bestbuy.view.CustomSearchView;
 import com.example.bestbuy.view.ui.products.Viewmodel.ProductsViewModel;
 import com.example.bestbuy.view.ui.products.model.ProductModel;
 
 import java.util.List;
 
-
 public class ProductsFragment extends Fragment {
 
+    private RecyclerView listRecyclerView,resultRecyclerView;
+    private ProductAdapter adapter;
+    private ProductsViewModel viewModel;
+    private CustomSearchView customSearchView;
+    private LinearLayout productListLayout;
+    private LinearLayout searchResultsLayout;
 
-        private RecyclerView recyclerView;
-        private ProductAdapter adapter;
-        private List<ProductModel> productList;
-        private SearchView searchView;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_products, container, false);
-            recyclerView = rootView.findViewById(R.id.recyclerView);
-            //searchView = rootView.findViewById(R.id.searchView);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-            recyclerView.setLayoutManager(gridLayoutManager);
-
-
-
-            // Set up search listener
-//            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//                @Override
-//                public boolean onQueryTextSubmit(String query) {
-//                    // Handle search query submission (optional)
-//                  //  ProductsViewModel.searchProducts(query);
-//                    return true;
-//                }
-//
-//                @Override
-//                public boolean onQueryTextChange(String newText) {
-//
-//                    adapter.getFilter().filter(newText);
-//                    return true;
-//                }
-//            });
-
-            return rootView;
-        }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_products, container, false);
+        listRecyclerView = rootView.findViewById(R.id.recyclerView);
+        resultRecyclerView=rootView.findViewById(R.id.search_results_recyclerView);
+        customSearchView = rootView.findViewById(R.id.custom_search_view);
+        productListLayout = rootView.findViewById(R.id.product_list_layout);
+        searchResultsLayout = rootView.findViewById(R.id.search_results_layout);
+        GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        listRecyclerView.setLayoutManager(gridLayoutManager);
+        resultRecyclerView.setLayoutManager(gridLayoutManager1);
+        return rootView;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         observeViewModel();
 
-    }
+        customSearchView.setSearchListener(query -> viewModel.searchProducts(query));
 
+    }
 
     private void observeViewModel() {
-        ProductsViewModel viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
-        viewModel.getAllProductsLiveData().observe(getViewLifecycleOwner(), this::updateRecycleView);
-         //viewModel.getSearchedProductsLiveData().observe(getViewLifecycleOwner(),this:: searchUpdates);
+        viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
+        viewModel.getAllProductsLiveData().observe(getViewLifecycleOwner(), this::updateProductList);
+        viewModel.getSearchedProductsLiveData().observe(getViewLifecycleOwner(), searchResults->{
+            Log.d("searchResults",""+searchResults);
+            showSearchResults(searchResults);
+        });
+
     }
 
-//    private void searchUpdates(List<ProductModel> productModels) {
-//            adapter=new ProductAdapter(getContext(),productList);
-//            recyclerView.setAdapter(adapter);
-//    }
+    private void updateProductList(List<ProductModel> productList) {
+        if (adapter == null) {
+            adapter = new ProductAdapter(getContext(), productList);
+            listRecyclerView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+        productListLayout.setVisibility(View.VISIBLE);
+        searchResultsLayout.setVisibility(View.GONE);
+    }
 
-    private void updateRecycleView(List<ProductModel> productList) {
-            adapter= new ProductAdapter(getContext(),productList);
-            recyclerView.setAdapter(adapter);
+    private void showSearchResults(List<ProductModel> searchResults) {
+        if (adapter == null) {
+            adapter = new ProductAdapter(getContext(), searchResults);
+            resultRecyclerView.setAdapter(adapter);
+        } else {
+            adapter = new ProductAdapter(getContext(), searchResults);
+            resultRecyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+        productListLayout.setVisibility(View.GONE);
+        searchResultsLayout.setVisibility(View.VISIBLE);
     }
 }

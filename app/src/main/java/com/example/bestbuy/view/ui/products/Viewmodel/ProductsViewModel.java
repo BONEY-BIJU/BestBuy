@@ -12,6 +12,8 @@ import java.util.List;
 public class ProductsViewModel extends ViewModel {
 
     String query;
+
+    private List<ProductModel> productList;
     private static ProductRepository productRepository;
     private MutableLiveData<List<ProductModel>> allProductsLiveData;
     private static MutableLiveData<List<ProductModel>> searchedProductsLiveData;
@@ -38,17 +40,19 @@ public class ProductsViewModel extends ViewModel {
     }
 
     public void fetchAllProducts() {
-       productRepository.FetchProducts((allProductsLiveData::postValue),
-               e ->{
-    });
+        productRepository.FetchProducts(productList->{
+                    allProductsLiveData.postValue(productList);
+                },
+                e -> {
+
+                });
 
     }
 
-//    public static void searchProducts(String query) {
-//        productRepository.searchProducts(
-//                query,
-//                productList -> searchedProductsLiveData.setValue(productList),
-//                error -> errorLiveData.setValue(error)
-//        );
-//    }
+    public void searchProducts(String query) {
+        productRepository.searchProducts(query,
+                searchedProductsLiveData::postValue,
+                error -> {  }
+        );
+    }
 }
