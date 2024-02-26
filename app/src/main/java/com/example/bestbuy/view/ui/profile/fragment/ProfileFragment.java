@@ -20,13 +20,14 @@ import com.example.bestbuy.view.activity.MainActivity;
 import com.example.bestbuy.R;
 import com.example.bestbuy.view.authentication.LoginPhone_Activity;
 import com.example.bestbuy.view.ui.profile.viewmodel.ProfileViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class ProfileFragment extends Fragment {
 
-    private TextView nameText, logoutText,placetext;
+    private TextView nameText, logoutText,placetext,phonetext;
     private Button loginButton;
     private ConstraintLayout profileLayout;
     private ConstraintLayout signInLayout;
@@ -40,6 +41,7 @@ public class ProfileFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
         nameText = root.findViewById(R.id.profile_username);
+        phonetext=root.findViewById(R.id.profile_phone);
         placetext=root.findViewById(R.id.profile_place);
         signInLayout = root.findViewById(R.id.signoutLayout);
         profileLayout = root.findViewById(R.id.SigInLayout);
@@ -59,14 +61,17 @@ public class ProfileFragment extends Fragment {
 
             if (userDetails != null) {
                 signInLayout.setVisibility(View.GONE);
-                saveUsernameToSharedPreferences(userDetails.getName(), userDetails.getPlace());
+                saveUsernameToSharedPreferences(userDetails.getName(), userDetails.getPlace(),userDetails.getPhoneNumber());
                 profileLayout.setVisibility(View.VISIBLE);
                 SharedPreferences preferences = requireActivity().getSharedPreferences(USER_PREFERENCE, Context.MODE_PRIVATE);
                 String userName = preferences.getString("username", null);
                 String place = preferences.getString("place", null);
+                String phonenumber=preferences.getString("phonenumber",null);
                 String formattedName = userName != null ? userName : "";
                 String formattedplace = place != null ? place : "";
+                String formatttednumber = phonenumber != null ? phonenumber :"";
                 nameText.setText(formattedName);
+                phonetext.setText(formatttednumber);
                 placetext.setText(formattedplace);
             } else {
                 signInLayout.setVisibility(View.VISIBLE);
@@ -76,6 +81,7 @@ public class ProfileFragment extends Fragment {
         logoutText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                deleteUser();
                 profileViewModel.logout();
 
                 Intent intent = new Intent(getContext(), MainActivity.class);
@@ -94,7 +100,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void saveUsernameToSharedPreferences(String username,String place) {
+    private void saveUsernameToSharedPreferences(String username,String place,String phonenumber) {
         SharedPreferences preferences = requireContext().getSharedPreferences(USER_PREFERENCE, Context.MODE_PRIVATE);
 
         // Check if the preference is empty before saving
@@ -102,8 +108,17 @@ public class ProfileFragment extends Fragment {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("username", username);
             editor.putString("place", place);
+            editor.putString("phonenumber",phonenumber);
             editor.apply();
         }
+    }
+    private void deleteUser(){
+        SharedPreferences preferences = requireContext().getSharedPreferences(USER_PREFERENCE, Context.MODE_PRIVATE);
+          SharedPreferences.Editor editor = preferences.edit();
+          editor.clear();
+          editor.apply();
+
+
     }
 
 }

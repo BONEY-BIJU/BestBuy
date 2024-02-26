@@ -1,11 +1,15 @@
 package com.example.bestbuy.view.ui.products.Viewmodel;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bestbuy.repository.ProductRepository;
+import com.example.bestbuy.view.ui.home.Model.HomeModel;
 import com.example.bestbuy.view.ui.products.model.ProductModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -15,7 +19,7 @@ public class ProductsViewModel extends ViewModel {
 
     private List<ProductModel> productList;
     private static ProductRepository productRepository;
-    private MutableLiveData<List<ProductModel>> allProductsLiveData;
+    private MutableLiveData<List<ProductModel>> allProductsLiveData, products;
     private static MutableLiveData<List<ProductModel>> searchedProductsLiveData;
     private static MutableLiveData<Exception> errorLiveData;
 
@@ -24,6 +28,7 @@ public class ProductsViewModel extends ViewModel {
         allProductsLiveData = new MutableLiveData<>();
         searchedProductsLiveData = new MutableLiveData<>();
         errorLiveData = new MutableLiveData<>();
+        products=new MutableLiveData<>();
     }
 
     public LiveData<List<ProductModel>> getAllProductsLiveData() {
@@ -40,7 +45,7 @@ public class ProductsViewModel extends ViewModel {
     }
 
     public void fetchAllProducts() {
-        productRepository.FetchProducts(productList->{
+        productRepository.FetchProducts(productList -> {
                     allProductsLiveData.postValue(productList);
                 },
                 e -> {
@@ -52,7 +57,20 @@ public class ProductsViewModel extends ViewModel {
     public void searchProducts(String query) {
         productRepository.searchProducts(query,
                 searchedProductsLiveData::postValue,
-                error -> {  }
+                error -> {
+                }
+        );
+    }
+
+    public LiveData<List<ProductModel>> getProductsLiveData() {
+        return  products;
+    }
+
+    public void loadProductsByCategory(String categoryId) {
+        ProductRepository.getProductsByCategory(categoryId,
+                products::postValue,
+                error -> {
+                }
         );
     }
 }

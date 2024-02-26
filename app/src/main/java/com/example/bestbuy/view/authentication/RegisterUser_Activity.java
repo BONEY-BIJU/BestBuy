@@ -33,13 +33,13 @@ public class RegisterUser_Activity extends AppCompatActivity {
 
         usernameInput = findViewById(R.id.login_username);
         placeInput = findViewById(R.id.login_place);
-        Button continueButton = findViewById(R.id.signupbutton);
+        Button signUp = findViewById(R.id.signupbutton);
 
         MyApplication myApplication = (MyApplication) getApplication();
         loginViewModel = myApplication.getAuthViewModel();
         String phoneNumber = loginViewModel.getPhoneNumber();
 
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Retrieve input values

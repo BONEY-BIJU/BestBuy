@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.example.bestbuy.view.CustomSearchView
+        android:id="@+id/custom_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <!-- Product List Layout -->
     <LinearLayout
@@ -11,16 +17,12 @@
         android:orientation="vertical">
 
         <!-- Custom SearchView -->
-        <com.example.bestbuy.view.CustomSearchView
-            android:id="@+id/custom_search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <!-- RecyclerView for Product List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="991dp"
             android:layout_weight="1"
             android:visibility="visible" />
 
@@ -43,4 +45,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

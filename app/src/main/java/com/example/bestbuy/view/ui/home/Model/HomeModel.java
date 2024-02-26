@@ -20,6 +20,7 @@ public class HomeModel {
     public static class Category {
         private String name;
         private String image;
+        private String categoryId;
 
         public Category() {
             // Required empty constructor for Firestore
@@ -33,6 +34,12 @@ public class HomeModel {
 
         public String getImage() {
             return image;
+        }
+
+        public String getCategoryId(){return categoryId;}
+
+        public void setCategoryId(String categoryId) {
+            this.categoryId=categoryId;
         }
     }
 

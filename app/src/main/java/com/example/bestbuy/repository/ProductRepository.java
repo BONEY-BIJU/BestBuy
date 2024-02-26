@@ -4,8 +4,13 @@ import android.util.Log;
 
 import com.example.bestbuy.view.ui.home.Model.HomeModel;
 import com.example.bestbuy.view.ui.products.model.ProductModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +56,29 @@ public class ProductRepository {
 
             onSuccess.accept(searchResults);
         }
+
+    public static void getProductsByCategory(String categoryId, Consumer<List<ProductModel>> onSuccess, Consumer<Exception> onError) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference clickedDocumentReference= db.collection("Categories").document(categoryId);
+        db.collection("Products")
+//                .whereEqualTo("category", categoryId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<ProductModel> categoryProducts = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            DocumentReference documentReference = (DocumentReference) document.get("category");
+                            if (documentReference != null && documentReference.equals(clickedDocumentReference)) {
+                                ProductModel product = document.toObject(ProductModel.class);
+                                categoryProducts.add(product);
+                            }
+                        }
+                        onSuccess.accept(categoryProducts);
+                    }else {
+                        onError.accept(task.getException());
+                    }
+                });
+    }
     }
 
 

@@ -27,7 +27,9 @@ public class HomeRepository {
                     if (task.isSuccessful()) {
                         List<HomeModel.Category> categories = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String categoryId = document.getId();
                             HomeModel.Category category = document.toObject(HomeModel.Category.class);
+                            category.setCategoryId(categoryId);
                             categories.add(category);
                         }
                       onSuccess.accept(categories);

@@ -17,7 +17,14 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/image_slider"
             android:layout_width="match_parent"
-            android:layout_height="252dp" />
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:id="@+id/slider_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,6 +40,7 @@
                 android:fontFamily="@font/amethysta"
                 android:text="Category"
                 android:textSize="21sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
@@ -84,6 +92,7 @@
                         android:layout_marginLeft="9dp"
                         android:fontFamily="@font/amethysta"
                         android:text="New Arrivals"
+                        android:textColor="@color/black"
                         android:textSize="21sp"
                         android:textStyle="bold" />
 
@@ -135,6 +144,7 @@
                     android:layout_marginLeft="9dp"
                     android:fontFamily="@font/amethysta"
                     android:text="Trending"
+                    android:textColor="@color/black"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
@@ -160,8 +170,8 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/trendingView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="400dp"
+                android:layout_height="725dp"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="7dp"
                 android:layout_marginTop="6dp"
@@ -170,6 +180,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 
 </androidx.core.widget.NestedScrollView>
